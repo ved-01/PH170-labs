@@ -23,7 +23,7 @@ def calculate_net_field(reference_point, charges, line_charges, surface_charges)
     net_field = np.zeros(3)
     for charge in charges:
         distance = reference_point - charge.position
-        field = charge.charge * distance / np.linalg.norm(distance)**3
+        field = charge.charge * distance / np.linalg.norm(distance)**2
         net_field += field
 
     for line_charge in line_charges:
