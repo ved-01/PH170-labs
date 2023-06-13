@@ -4,189 +4,70 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="home.css">
     <title>Electric Field Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button[type="submit"],
+        button[type="button"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover,
+        button[type="button"]:hover {
+            background-color: #45a049;
+        }
+
+        #point_charge_section,
+        #line_charge_section,
+        #surface_charge_section {
+            display: none;
+        }
+
+        #point_charges div,
+        #line_charges div,
+        #surface_charges div {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Electric Field Calculator</h1>
-    <form method="POST" action="/">
-        <label for="charge_type">Choose the type of charge:</label>
-        <select name="charge_type" id="charge_type">
-            <option value="P">Point Charge</option>
-            <option value="L">Line Charge</option>
-            <option value="S">Surface Charge</option>
-        </select>
-        <br><br>
-        <div id="point_charge_section">
-            <label for="num_charges">Number of Point Charges:</label>
-            <input type="number" name="num_charges" id="num_charges" min="1" max="100">
-            <br><br>
-            <div id="point_charges"></div>
-            <button type="button" onclick="addPointCharge()">Add Point Charge</button>
-            <br><br>
-        </div>
-        <div id="line_charge_section">
-            <label for="num_line_charges">Number of Line Charges:</label>
-            <input type="number" name="num_line_charges" id="num_line_charges" min="1" max="100">
-            <br><br>
-            <div id="line_charges"></div>
-            <button type="button" onclick="addLineCharge()">Add Line Charge</button>
-            <br><br>
-        </div>
-        <div id="surface_charge_section">
-            <label for="num_surface_charges">Number of Surface Charges:</label>
-            <input type="number" name="num_surface_charges" id="num_surface_charges" min="1" max="100">
-            <br><br>
-            <div id="surface_charges"></div>
-            <button type="button" onclick="addSurfaceCharge()">Add Surface Charge</button>
-            <br><br>
-        </div>
-        <label for="ref_x">Reference Point (x, y, z):</label>
-        <input type="text" name="ref_x" id="ref_x" required>
-        <input type="text" name="ref_y" id="ref_y" required>
-        <input type="text" name="ref_z" id="ref_z" required>
-        <br><br>
-        <button type="submit">Calculate</button>
-    </form>
-
-    <script>
-        // Function to add a point charge input section
-        function addPointCharge() {
-            var numCharges = parseInt(document.getElementById('num_charges').value);
-            var pointChargesDiv = document.getElementById('point_charges');
-
-            var chargeDiv = document.createElement('div');
-            chargeDiv.innerHTML = 'Charge ' + (numCharges + 1) + ' (x, y, z): ';
-            var xInput = document.createElement('input');
-            xInput.type = 'text';
-            xInput.name = 'charge_' + numCharges + '_x';
-            var yInput = document.createElement('input');
-            yInput.type = 'text';
-            yInput.name = 'charge_' + numCharges + '_y';
-            var zInput = document.createElement('input');
-            zInput.type = 'text';
-            zInput.name = 'charge_' + numCharges + '_z';
-            chargeDiv.appendChild(xInput);
-            chargeDiv.appendChild(yInput);
-            chargeDiv.appendChild(zInput);
-
-            var chargeValueLabel = document.createElement('label');
-            chargeValueLabel.innerHTML = 'Charge: ';
-            var chargeInput = document.createElement('input');
-            chargeInput.type = 'text';
-            chargeInput.name = 'charge_' + numCharges;
-
-            chargeDiv.appendChild(chargeValueLabel);
-            chargeDiv.appendChild(chargeInput);
-
-            pointChargesDiv.appendChild(chargeDiv);
-
-            document.getElementById('num_charges').value = numCharges + 1;
-        }
-
-        // Function to add a line charge input section
-        function addLineCharge() {
-            var numLineCharges = parseInt(document.getElementById('num_line_charges').value);
-            var lineChargesDiv = document.getElementById('line_charges');
-
-            var lineChargeDiv = document.createElement('div');
-            lineChargeDiv.innerHTML = 'Line Charge ' + (numLineCharges + 1) + ' Start (x1, y1, z1): ';
-            var x1Input = document.createElement('input');
-            x1Input.type = 'text';
-            x1Input.name = 'line_charge_' + numLineCharges + '_x1';
-            var y1Input = document.createElement('input');
-            y1Input.type = 'text';
-            y1Input.name = 'line_charge_' + numLineCharges + '_y1';
-            var z1Input = document.createElement('input');
-            z1Input.type = 'text';
-            z1Input.name = 'line_charge_' + numLineCharges + '_z1';
-            lineChargeDiv.appendChild(x1Input);
-            lineChargeDiv.appendChild(y1Input);
-            lineChargeDiv.appendChild(z1Input);
-
-            lineChargeDiv.innerHTML += ' End (x2, y2, z2): ';
-            var x2Input = document.createElement('input');
-            x2Input.type = 'text';
-            x2Input.name = 'line_charge_' + numLineCharges + '_x2';
-            var y2Input = document.createElement('input');
-            y2Input.type = 'text';
-            y2Input.name = 'line_charge_' + numLineCharges + '_y2';
-            var z2Input = document.createElement('input');
-            z2Input.type = 'text';
-            z2Input.name = 'line_charge_' + numLineCharges + '_z2';
-            lineChargeDiv.appendChild(x2Input);
-            lineChargeDiv.appendChild(y2Input);
-            lineChargeDiv.appendChild(z2Input);
-
-            var chargeDensityLabel = document.createElement('label');
-            chargeDensityLabel.innerHTML = 'Charge Density: ';
-            var chargeDensityInput = document.createElement('input');
-            chargeDensityInput.type = 'text';
-            chargeDensityInput.name = 'line_charge_' + numLineCharges;
-
-            lineChargeDiv.appendChild(chargeDensityLabel);
-            lineChargeDiv.appendChild(chargeDensityInput);
-
-            lineChargesDiv.appendChild(lineChargeDiv);
-
-            document.getElementById('num_line_charges').value = numLineCharges + 1;
-        }
-
-        // Function to add a surface charge input section
-        function addSurfaceCharge() {
-            var numSurfaceCharges = parseInt(document.getElementById('num_surface_charges').value);
-            var surfaceChargesDiv = document.getElementById('surface_charges');
-
-            var surfaceChargeDiv = document.createElement('div');
-            surfaceChargeDiv.innerHTML = 'Surface Charge ' + (numSurfaceCharges + 1) + ' (x, y, z): ';
-            var xInput = document.createElement('input');
-            xInput.type = 'text';
-            xInput.name = 'surface_charge_' + numSurfaceCharges + '_x';
-            var yInput = document.createElement('input');
-            yInput.type = 'text';
-            yInput.name = 'surface_charge_' + numSurfaceCharges + '_y';
-            var zInput = document.createElement('input');
-            zInput.type = 'text';
-            zInput.name = 'surface_charge_' + numSurfaceCharges + '_z';
-            surfaceChargeDiv.appendChild(xInput);
-            surfaceChargeDiv.appendChild(yInput);
-            surfaceChargeDiv.appendChild(zInput);
-
-            var chargeDensityLabel = document.createElement('label');
-            chargeDensityLabel.innerHTML = 'Charge Density: ';
-            var chargeDensityInput = document.createElement('input');
-            chargeDensityInput.type = 'text';
-            chargeDensityInput.name = 'surface_charge_' + numSurfaceCharges;
-
-            surfaceChargeDiv.appendChild(chargeDensityLabel);
-            surfaceChargeDiv.appendChild(chargeDensityInput);
-
-            surfaceChargesDiv.appendChild(surfaceChargeDiv);
-
-            document.getElementById('num_surface_charges').value = numSurfaceCharges + 1;
-        }
-
-        // Show the appropriate charge input section based on the selected charge type
-        document.getElementById('charge_type').addEventListener('change', function() {
-            var chargeType = document.getElementById('charge_type').value.toLowerCase();
-            var pointChargeSection = document.getElementById('point_charge_section');
-            var lineChargeSection = document.getElementById('line_charge_section');
-            var surfaceChargeSection = document.getElementById('surface_charge_section');
-
-            if (chargeType === 'p') {
-                pointChargeSection.style.display = 'block';
-                lineChargeSection.style.display = 'none';
-                surfaceChargeSection.style.display = 'none';
-            } else if (chargeType === 'l') {
-                pointChargeSection.style.display = 'none';
-                lineChargeSection.style.display = 'block';
-                surfaceChargeSection.style.display = 'none';
-            } else if (chargeType === 's') {
-                pointChargeSection.style.display = 'none';
-                lineChargeSection.style.display = 'none';
-                surfaceChargeSection.style.display = 'block';
-            }
-        });
-    </script>
+    <!-- Your existing HTML code here -->
 </body>
 </html>
