@@ -58,16 +58,18 @@ def index():
                 charges.append(Charge(np.array([x, y, z]), charge))
 
         elif charge_type.lower() == 'l':
-            num_line_charges = int(request.form['num_line_charges'])
-            for i in range(num_line_charges):
-                x1 = float(request.form[f'line_charge_{i}_x1'])
-                y1 = float(request.form[f'line_charge_{i}_y1'])
-                z1 = float(request.form[f'line_charge_{i}_z1'])
-                x2 = float(request.form[f'line_charge_{i}_x2'])
-                y2 = float(request.form[f'line_charge_{i}_y2'])
-                z2 = float(request.form[f'line_charge_{i}_z2'])
-                charge_density = float(request.form[f'line_charge_{i}'])
-                line_charges.append(LineCharge(np.array([x1, y1, z1]), np.array([x2, y2, z2]), charge_density))
+            num_line_charges = request.form['num_line_charges']
+            if num_line_charges and num_line_charges.strip().isdigit():
+                num_line_charges = int(num_line_charges)
+                for i in range(num_line_charges):
+                    x1 = float(request.form[f'line_charge_{i}_x1'])
+                    y1 = float(request.form[f'line_charge_{i}_y1'])
+                    z1 = float(request.form[f'line_charge_{i}_z1'])
+                    x2 = float(request.form[f'line_charge_{i}_x2'])
+                    y2 = float(request.form[f'line_charge_{i}_y2'])
+                    z2 = float(request.form[f'line_charge_{i}_z2'])
+                    charge_density = float(request.form[f'line_charge_{i}'])
+                    line_charges.append(LineCharge(np.array([x1, y1, z1]), np.array([x2, y2, z2]), charge_density))
 
         elif charge_type.lower() == 's':
             num_surface_charges = int(request.form['num_surface_charges'])
@@ -87,6 +89,3 @@ def index():
         return render_template('index.html', net_field=net_field)
 
     return render_template('index.html')
-# updated
-if __name__ == '__main__':
-    app.run(debug=True)
