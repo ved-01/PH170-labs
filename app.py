@@ -20,21 +20,34 @@ class SurfaceCharge:
         self.charge_density = charge_density
 
 def calculate_net_field(reference_point, charges, line_charges, surface_charges):
-    net_field = np.zeros(3)
+    k = 8.99e9
+    net_field = np.array([0.0, 0.0, 0.0])
+
     for charge in charges:
-        distance = reference_point - charge.position
-        field = charge.charge * distance / np.linalg.norm(distance)**2
+        r = reference_point - charge.position
+        mag = np.linalg.norm(r)
+        direction = r / mag
+        field = (k * charge.charge / mag**2) * direction
         net_field += field
 
     for line_charge in line_charges:
-        line_vector = line_charge.end - line_charge.start
-        length = np.linalg.norm(line_vector)
-        direction = line_vector / length
-        field = line_charge.charge_density * direction / (2 * np.pi * length)
+        r1 = reference_point - line_charge.start
+        r2 = reference_point - line_charge.end
+        dl = line_charge.end - line_charge.start
+        mag_r1 = np.linalg.norm(r1)
+        mag_r2 = np.linalg.norm(r2)
+        mag_dl = np.linalg.norm(dl)
+        direction_r1 = r1 / mag_r1
+        direction_r2 = r2 / mag_r2
+        cross_prod = np.cross(dl, r1) / (mag_dl * mag_r1**2)
+        field = (k * line_charge.charge_density / (2 * np.pi)) * (direction_r1 - direction_r2) * cross_prod
         net_field += field
 
     for surface_charge in surface_charges:
-        field = surface_charge.charge_density * np.array([0, 0, 1]) / (2 * surface_charge.position[2])
+        r = reference_point - surface_charge.position
+        mag = np.linalg.norm(r)
+        direction = r / mag
+        field = (k * surface_charge.charge_density) * direction
         net_field += field
 
     return net_field
@@ -89,3 +102,6 @@ def index():
         return render_template('index.html', net_field=net_field)
 
     return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
