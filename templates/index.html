@@ -101,5 +101,30 @@
     <p>Net Electric Field (Ey): {{ net_field[1] }} N/C</p>
     <p>Net Electric Field (Ez): {{ net_field[2] }} N/C</p>
     {% endif %}
+
+    <script>
+        var chargeTypeSelect = document.getElementById('charge_type');
+        var pointChargeFields = document.getElementById('point_charge_fields');
+        var lineChargeFields = document.getElementById('line_charge_fields');
+        var surfaceChargeFields = document.getElementById('surface_charge_fields');
+
+        chargeTypeSelect.addEventListener('change', function() {
+            var selectedChargeType = chargeTypeSelect.value;
+
+            if (selectedChargeType === 'P') {
+                pointChargeFields.style.display = 'block';
+                lineChargeFields.style.display = 'none';
+                surfaceChargeFields.style.display = 'none';
+            } else if (selectedChargeType === 'L') {
+                pointChargeFields.style.display = 'none';
+                lineChargeFields.style.display = 'block';
+                surfaceChargeFields.style.display = 'none';
+            } else if (selectedChargeType === 'S') {
+                pointChargeFields.style.display = 'none';
+                lineChargeFields.style.display = 'none';
+                surfaceChargeFields.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
