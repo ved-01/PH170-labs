@@ -14,7 +14,6 @@
             <option value="S">Surface Charge</option>
         </select>
 
-        <!-- Point Charge Input Fields -->
         <div id="point_charge_fields" style="display: none;">
             <h2>Point Charge</h2>
             <label for="charge_x">Charge X:</label>
@@ -30,7 +29,6 @@
             <input type="number" step="any" name="charge"><br>
         </div>
 
-        <!-- Line Charge Input Fields -->
         <div id="line_charge_fields" style="display: none;">
             <h2>Line Charge</h2>
             <label for="line_charge_x1">Line Charge X1:</label>
@@ -55,7 +53,6 @@
             <input type="number" step="any" name="line_charge"><br>
         </div>
 
-        <!-- Surface Charge Input Fields -->
         <div id="surface_charge_fields" style="display: none;">
             <h2>Surface Charge</h2>
             <label for="surface_charge_x">Surface Charge X:</label>
@@ -71,7 +68,6 @@
             <input type="number" step="any" name="surface_charge"><br>
         </div>
 
-        <!-- Reference Point Input Fields -->
         <h2>Reference Point</h2>
         <label for="ref_x">Ref X:</label>
         <input type="number" step="any" name="ref_x"><br>
@@ -93,7 +89,6 @@
     {% endif %}
 
     <script>
-        // Function to show or hide the input fields based on the selected charge type
         function toggleChargeFields() {
             var chargeType = document.getElementById('charge_type').value;
             var pointChargeFields = document.getElementById('point_charge_fields');
@@ -115,10 +110,8 @@
             }
         }
 
-        // Event listener for charge type selection change
         document.getElementById('charge_type').addEventListener('change', toggleChargeFields);
 
-        // Initial call to set the initial state of the input fields
         toggleChargeFields();
     </script>
 </body>

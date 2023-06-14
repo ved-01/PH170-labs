@@ -5,13 +5,12 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def calculate_field():
-    net_field = None  # Initialize net_field variable
+    net_field = None  
 
     if request.method == 'POST':
         charge_type = request.form['charge_type']
 
         if charge_type == 'P':
-            # Point charge calculation logic
             charge_x = float(request.form['charge_x'])
             charge_y = float(request.form['charge_y'])
             charge_z = float(request.form['charge_z'])
@@ -22,7 +21,6 @@ def calculate_field():
             net_field = calculate_point_charge_field(charge_x, charge_y, charge_z, charge, ref_x, ref_y, ref_z)
 
         elif charge_type == 'L':
-            # Line charge calculation logic
             line_charge_x1 = float(request.form['line_charge_x1'])
             line_charge_y1 = float(request.form['line_charge_y1'])
             line_charge_z1 = float(request.form['line_charge_z1'])
@@ -38,7 +36,6 @@ def calculate_field():
                                                     line_charge, ref_x, ref_y, ref_z)
 
         elif charge_type == 'S':
-            # Surface charge calculation logic
             surface_charge_x = float(request.form['surface_charge_x'])
             surface_charge_y = float(request.form['surface_charge_y'])
             surface_charge_z = float(request.form['surface_charge_z'])
