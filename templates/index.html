@@ -51,7 +51,6 @@
     </form>
 
     <script>
-        // Function to add a point charge input section
         function addPointCharge() {
             var numCharges = parseInt(document.getElementById('num_charges').value);
             var pointChargesDiv = document.getElementById('point_charges');
@@ -85,7 +84,6 @@
             document.getElementById('num_charges').value = numCharges + 1;
         }
 
-        // Function to add a line charge input section
         function addLineCharge() {
             var numLineCharges = parseInt(document.getElementById('num_line_charges').value);
             var lineChargesDiv = document.getElementById('line_charges');
@@ -133,7 +131,6 @@
             document.getElementById('num_line_charges').value = numLineCharges + 1;
         }
 
-        // Function to add a surface charge input section
         function addSurfaceCharge() {
             var numSurfaceCharges = parseInt(document.getElementById('num_surface_charges').value);
             var surfaceChargesDiv = document.getElementById('surface_charges');
@@ -167,7 +164,6 @@
             document.getElementById('num_surface_charges').value = numSurfaceCharges + 1;
         }
 
-        // Show the appropriate charge input section based on the selected charge type
         document.getElementById('charge_type').addEventListener('change', function() {
             var chargeType = document.getElementById('charge_type').value.toLowerCase();
             var pointChargeSection = document.getElementById('point_charge_section');
