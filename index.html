@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Electric Field Calculator</title>
+</head>
+<body>
+    <h1>Electric Field Calculator</h1>
+
+    <form method="POST" action="/">
+        <label for="charge_type">Charge Type:</label>
+        <select name="charge_type" id="charge_type">
+            <option value="P">Point Charge</option>
+            <option value="L">Line Charge</option>
+            <option value="S">Surface Charge</option>
+        </select>
+
+        <!-- Point Charge Input Fields -->
+        <div id="point_charge_fields" style="display: none;">
+            <h2>Point Charge</h2>
+            <label for="charge_x">Charge X:</label>
+            <input type="number" step="any" name="charge_x"><br>
+
+            <label for="charge_y">Charge Y:</label>
+            <input type="number" step="any" name="charge_y"><br>
+
+            <label for="charge_z">Charge Z:</label>
+            <input type="number" step="any" name="charge_z"><br>
+
+            <label for="charge">Charge:</label>
+            <input type="number" step="any" name="charge"><br>
+        </div>
+
+        <!-- Line Charge Input Fields -->
+        <div id="line_charge_fields" style="display: none;">
+            <h2>Line Charge</h2>
+            <label for="line_charge_x1">Line Charge X1:</label>
+            <input type="number" step="any" name="line_charge_x1"><br>
+
+            <label for="line_charge_y1">Line Charge Y1:</label>
+            <input type="number" step="any" name="line_charge_y1"><br>
+
+            <label for="line_charge_z1">Line Charge Z1:</label>
+            <input type="number" step="any" name="line_charge_z1"><br>
+
+            <label for="line_charge_x2">Line Charge X2:</label>
+            <input type="number" step="any" name="line_charge_x2"><br>
+
+            <label for="line_charge_y2">Line Charge Y2:</label>
+            <input type="number" step="any" name="line_charge_y2"><br>
+
+            <label for="line_charge_z2">Line Charge Z2:</label>
+            <input type="number" step="any" name="line_charge_z2"><br>
+
+            <label for="line_charge">Line Charge:</label>
+            <input type="number" step="any" name="line_charge"><br>
+        </div>
+
+        <!-- Surface Charge Input Fields -->
+        <div id="surface_charge_fields" style="display: none;">
+            <h2>Surface Charge</h2>
+            <label for="surface_charge_x">Surface Charge X:</label>
+            <input type="number" step="any" name="surface_charge_x"><br>
+
+            <label for="surface_charge_y">Surface Charge Y:</label>
+            <input type="number" step="any" name="surface_charge_y"><br>
+
+            <label for="surface_charge_z">Surface Charge Z:</label>
+            <input type="number" step="any" name="surface_charge_z"><br>
+
+            <label for="surface_charge">Surface Charge:</label>
+            <input type="number" step="any" name="surface_charge"><br>
+        </div>
+
+        <!-- Reference Point Input Fields -->
+        <h2>Reference Point</h2>
+        <label for="ref_x">Ref X:</label>
+        <input type="number" step="any" name="ref_x"><br>
+
+        <label for="ref_y">Ref Y:</label>
+        <input type="number" step="any" name="ref_y"><br>
+
+        <label for="ref_z">Ref Z:</label>
+        <input type="number" step="any" name="ref_z"><br>
+
+        <input type="submit" value="Calculate">
+    </form>
+
+    {% if net_field %}
+    <h2>Net Electric Field:</h2>
+    <p>Ex: {{ net_field[0] }}</p>
+    <p>Ey: {{ net_field[1] }}</p>
+    <p>Ez: {{ net_field[2] }}</p>
+    {% endif %}
+
+    <script>
+        // Function to show or hide the input fields based on the selected charge type
+        function toggleChargeFields() {
+            var chargeType = document.getElementById('charge_type').value;
+            var pointChargeFields = document.getElementById('point_charge_fields');
+            var lineChargeFields = document.getElementById('line_charge_fields');
+            var surfaceChargeFields = document.getElementById('surface_charge_fields');
+
+            if (chargeType === 'P') {
+                pointChargeFields.style.display = 'block';
+                lineChargeFields.style.display = 'none';
+                surfaceChargeFields.style.display = 'none';
+            } else if (chargeType === 'L') {
+                pointChargeFields.style.display = 'none';
+                lineChargeFields.style.display = 'block';
+                surfaceChargeFields.style.display = 'none';
+            } else if (chargeType === 'S') {
+                pointChargeFields.style.display = 'none';
+                lineChargeFields.style.display = 'none';
+                surfaceChargeFields.style.display = 'block';
+            }
+        }
+
+        // Event listener for charge type selection change
+        document.getElementById('charge_type').addEventListener('change', toggleChargeFields);
+
+        // Initial call to set the initial state of the input fields
+        toggleChargeFields();
+    </script>
+</body>
+</html>
