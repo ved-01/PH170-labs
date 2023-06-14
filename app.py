@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 
 app = Flask(__name__)
 
@@ -46,7 +46,8 @@ def calculate_field():
             net_field = calculate_surface_charge_field(surface_charge_x, surface_charge_y, surface_charge_z,
                                                        surface_charge, ref_x, ref_y, ref_z)
 
-    return render_template('index.html', net_field=net_field)
+    return render_template('index.html', net_field=net_field, css=url_for('static', filename='style.css'))
+
 
 
 def calculate_point_charge_field(charge_x, charge_y, charge_z, charge, ref_x, ref_y, ref_z):
