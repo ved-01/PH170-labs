@@ -1,107 +1,117 @@
 from flask import Flask, render_template, request
-import numpy as np
 
 app = Flask(__name__)
 
-class Charge:
-    def __init__(self, position, charge):
-        self.position = position
-        self.charge = charge
-
-class LineCharge:
-    def __init__(self, start, end, charge_density):
-        self.start = start
-        self.end = end
-        self.charge_density = charge_density
-
-class SurfaceCharge:
-    def __init__(self, position, charge_density):
-        self.position = position
-        self.charge_density = charge_density
-
-def calculate_net_field(reference_point, charges, line_charges, surface_charges):
-    k = 8.99e9
-    net_field = np.array([0.0, 0.0, 0.0])
-
-    for charge in charges:
-        r = reference_point - charge.position
-        mag = np.linalg.norm(r)
-        direction = r / mag
-        field = (k * charge.charge / mag**2) * direction
-        net_field += field
-
-    for line_charge in line_charges:
-        r1 = reference_point - line_charge.start
-        r2 = reference_point - line_charge.end
-        dl = line_charge.end - line_charge.start
-        mag_r1 = np.linalg.norm(r1)
-        mag_r2 = np.linalg.norm(r2)
-        mag_dl = np.linalg.norm(dl)
-        direction_r1 = r1 / mag_r1
-        direction_r2 = r2 / mag_r2
-        cross_prod = np.cross(dl, r1) / (mag_dl * mag_r1**2)
-        field = (k * line_charge.charge_density / (2 * np.pi)) * (direction_r1 - direction_r2) * cross_prod
-        net_field += field
-
-    for surface_charge in surface_charges:
-        r = reference_point - surface_charge.position
-        mag = np.linalg.norm(r)
-        direction = r / mag
-        field = (k * surface_charge.charge_density) * direction
-        net_field += field
-
-    return net_field
-
 @app.route('/', methods=['GET', 'POST'])
-def index():
+def calculate_field():
     if request.method == 'POST':
         charge_type = request.form['charge_type']
-
-        charges = []
-        line_charges = []
-        surface_charges = []
-
-        if charge_type.lower() == 'p':
-            num_charges = int(request.form['num_charges'])
-            for i in range(num_charges):
-                x = float(request.form[f'charge_{i}_x'])
-                y = float(request.form[f'charge_{i}_y'])
-                z = float(request.form[f'charge_{i}_z'])
-                charge = float(request.form[f'charge_{i}'])
-                charges.append(Charge(np.array([x, y, z]), charge))
-
-        elif charge_type.lower() == 'l':
-            num_line_charges = request.form['num_line_charges']
-            if num_line_charges and num_line_charges.strip().isdigit():
-                num_line_charges = int(num_line_charges)
-                for i in range(num_line_charges):
-                    x1 = float(request.form[f'line_charge_{i}_x1'])
-                    y1 = float(request.form[f'line_charge_{i}_y1'])
-                    z1 = float(request.form[f'line_charge_{i}_z1'])
-                    x2 = float(request.form[f'line_charge_{i}_x2'])
-                    y2 = float(request.form[f'line_charge_{i}_y2'])
-                    z2 = float(request.form[f'line_charge_{i}_z2'])
-                    charge_density = float(request.form[f'line_charge_{i}'])
-                    line_charges.append(LineCharge(np.array([x1, y1, z1]), np.array([x2, y2, z2]), charge_density))
-
-        elif charge_type.lower() == 's':
-            num_surface_charges = int(request.form['num_surface_charges'])
-            for i in range(num_surface_charges):
-                x = float(request.form[f'surface_charge_{i}_x'])
-                y = float(request.form[f'surface_charge_{i}_y'])
-                z = float(request.form[f'surface_charge_{i}_z'])
-                charge_density = float(request.form[f'surface_charge_{i}'])
-                surface_charges.append(SurfaceCharge(np.array([x, y, z]), charge_density))
-
         ref_x = float(request.form['ref_x'])
         ref_y = float(request.form['ref_y'])
         ref_z = float(request.form['ref_z'])
-        reference_point = np.array([ref_x, ref_y, ref_z])
-
-        net_field = calculate_net_field(reference_point, charges, line_charges, surface_charges)
+        
+        if charge_type == 'P':
+            charge_x = float(request.form['charge_x'])
+            charge_y = float(request.form['charge_y'])
+            charge_z = float(request.form['charge_z'])
+            charge = float(request.form['charge'])
+            
+            # Calculate electric field for point charge
+            net_field = calculate_point_charge_field(charge_x, charge_y, charge_z, charge, ref_x, ref_y, ref_z)
+            
+        elif charge_type == 'L':
+            line_charge_x1 = float(request.form['line_charge_x1'])
+            line_charge_y1 = float(request.form['line_charge_y1'])
+            line_charge_z1 = float(request.form['line_charge_z1'])
+            line_charge_x2 = float(request.form['line_charge_x2'])
+            line_charge_y2 = float(request.form['line_charge_y2'])
+            line_charge_z2 = float(request.form['line_charge_z2'])
+            line_charge = float(request.form['line_charge'])
+            
+            # Calculate electric field for line charge
+            net_field = calculate_line_charge_field(line_charge_x1, line_charge_y1, line_charge_z1, line_charge_x2, line_charge_y2, line_charge_z2, line_charge, ref_x, ref_y, ref_z)
+            
+        elif charge_type == 'S':
+            surface_charge_x = float(request.form['surface_charge_x'])
+            surface_charge_y = float(request.form['surface_charge_y'])
+            surface_charge_z = float(request.form['surface_charge_z'])
+            surface_charge = float(request.form['surface_charge'])
+            
+            # Calculate electric field for surface charge
+            net_field = calculate_surface_charge_field(surface_charge_x, surface_charge_y, surface_charge_z, surface_charge, ref_x, ref_y, ref_z)
+            
+        else:
+            net_field = None
+            
         return render_template('index.html', net_field=net_field)
 
-    return render_template('index.html')
+    return render_template('index.html', net_field=None)
+
+import math
+
+# Function to calculate the electric field due to a point charge at a reference point
+def calculate_point_charge_field(charge_x, charge_y, charge_z, charge, ref_x, ref_y, ref_z):
+    k = 9e9  # Coulomb's constant
+    dx = ref_x - charge_x
+    dy = ref_y - charge_y
+    dz = ref_z - charge_z
+    r = math.sqrt(dx**2 + dy**2 + dz**2)  # distance between the reference point and charge
+
+    # Calculate electric field components (Ex, Ey, Ez) using Coulomb's law
+    Ex = k * charge * dx / r**3
+    Ey = k * charge * dy / r**3
+    Ez = k * charge * dz / r**3
+
+    return (Ex, Ey, Ez)
+
+
+# Function to calculate the electric field due to a line charge at a reference point
+def calculate_line_charge_field(charge_x1, charge_y1, charge_z1, charge_x2, charge_y2, charge_z2, charge_density, ref_x, ref_y, ref_z):
+    k = 9e9  # Coulomb's constant
+
+    # Calculate the vector components of the line segment
+    dx = charge_x2 - charge_x1
+    dy = charge_y2 - charge_y1
+    dz = charge_z2 - charge_z1
+
+    # Calculate the length of the line segment
+    dl = math.sqrt(dx**2 + dy**2 + dz**2)
+
+    # Calculate the unit vector in the direction of the line segment
+    ux = dx / dl
+    uy = dy / dl
+    uz = dz / dl
+
+    # Calculate the distance between the reference point and the line segment
+    drx = ref_x - charge_x1
+    dry = ref_y - charge_y1
+    drz = ref_z - charge_z1
+
+    # Calculate the projection of the distance vector onto the line segment
+    dr_dot_u = drx * ux + dry * uy + drz * uz
+
+    # Calculate the electric field component due to the line charge
+    E = k * charge_density * dl / (4 * math.pi)
+
+    # Calculate the electric field components (Ex, Ey, Ez)
+    Ex = E * dr_dot_u * ux / (dr_dot_u**2 + dl**2)
+    Ey = E * dr_dot_u * uy / (dr_dot_u**2 + dl**2)
+    Ez = E * dr_dot_u * uz / (dr_dot_u**2 + dl**2)
+
+    return (Ex, Ey, Ez)
+
+
+# Function to calculate the electric field due to a surface charge at a reference point
+def calculate_surface_charge_field(charge_density, ref_x, ref_y, ref_z):
+    k = 9e9  # Coulomb's constant
+
+    # Calculate the electric field components (Ex, Ey, Ez)
+    Ex = 0.0  # Surface charge does not contribute to the electric field
+    Ey = 0.0  # Surface charge does not contribute to the electric field
+    Ez = k * charge_density / 2
+
+    return (Ex, Ey, Ez)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
