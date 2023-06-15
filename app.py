@@ -54,12 +54,20 @@ def calculate_point_charge_field(charge_x, charge_y, charge_z, charge, ref_x, re
     dx = ref_x - charge_x
     dy = ref_y - charge_y
     dz = ref_z - charge_z
-    r = (dx**2 + dy**2 + dz**2)**0.5
-    e_field = (9e9 * charge) / (r**2)
+    r = (dx ** 2 + dy ** 2 + dz ** 2) ** 0.5
+
+    e_field = 0
+    k = 8.9875517923e9  
+
+    if r != 0:
+        e_field = (k * charge) / (r ** 2)
+
     ex = e_field * (dx / r)
     ey = e_field * (dy / r)
     ez = e_field * (dz / r)
+
     return ex, ey, ez
+
 
 
 def calculate_line_charge_field(line_charge_x1, line_charge_y1, line_charge_z1,
