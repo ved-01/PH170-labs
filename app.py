@@ -119,7 +119,7 @@ def calculate_surface_charge_field(surface_charge_x, surface_charge_y, surface_c
 
     return ex, ey, ez
 
-
+# formulas rectfified
 
 if __name__ == '__main__':
     app.run(debug=True)
